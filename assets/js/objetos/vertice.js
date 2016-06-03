@@ -36,7 +36,7 @@ Vertice.prototype.atualizarArestas = function()
 
 Vertice.prototype.obterPosicao = function() 
 {
-    return this.position;
+    return this.position.clone();
 };
 
 Vertice.prototype.alterarPosicao = function( posicao )

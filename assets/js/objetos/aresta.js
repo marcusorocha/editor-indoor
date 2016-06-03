@@ -1,13 +1,14 @@
 var Aresta = function( vA, vB ) 
 {
-    THREE.Line.call( this );
+    THREE.Line.call( this );	
     
     this.sid = 0;    
     this.type = "Aresta";
     this.verticeA = vA;
 	this.verticeB = vB;    
     this.material = new THREE.LineBasicMaterial({ color: 0x000000 });    
-    this.geometry.vertices = [this.verticeA.obterPosicao(), this.verticeB.obterPosicao()];
+	this.geometry = new THREE.Geometry();
+	this.geometry.vertices.push(this.verticeA.obterPosicao(), this.verticeB.obterPosicao());    
     this.selecionavel = false;
     
     this.verticeA.addAresta(this);
@@ -21,7 +22,8 @@ Aresta.prototype.constructor = Aresta;
 
 Aresta.prototype.atualizar = function()
 {
-    this.geometry.vertices = [this.verticeA.obterPosicao(), this.verticeB.obterPosicao()];
+	this.geometry = new THREE.Geometry();
+	this.geometry.vertices.push(this.verticeA.obterPosicao(), this.verticeB.obterPosicao());    
     this.geometry.verticesNeedUpdate = true;
 };
 
