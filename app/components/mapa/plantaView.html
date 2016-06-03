@@ -1,0 +1,32 @@
+<div class="modal-header">
+    <h3 class="modal-title">Enviar planta</h3>
+</div>
+
+<div class="modal-body">
+    <form action="{{ ::formURL }}" method="post" enctype="multipart/form-data">
+        
+        <div ng-hide="true">
+            <label for="edificio">Edificio:</label>
+            <input type="text" name="edificio" ng-model="params.edificioId"/><br/>
+            
+            <label for="nivel">Nível:</label>
+            <input type="text" name="nivel" ng-model="params.pavimentoId"/><br/>
+        </div>
+        
+        <label for="arquivo">Arquivo:</label>
+        <input type="file" name="arquivo" size="50" /><br/>
+        
+        <label for="ext">Tipo:</label> 
+        <select name="ext">
+            <option value="obj">OBJ</option>
+            <option value="mtl">MTL</option>            
+        </select>
+        
+        <input type="submit" value="Enviar" />
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

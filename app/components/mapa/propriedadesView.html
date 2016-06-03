@@ -1,0 +1,63 @@
+<div class="modal-header">
+    <h3 class="modal-title">Propriedades do Objeto</h3>
+</div>
+
+<div class="modal-body">
+    <form class="form-horizontal">
+        
+        <fieldset ng-hide="isVertice()">
+            <legend>Transformações</legend>
+            <div class="form-group" >
+                <label class="control-label col-sm-2">Rotação:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="objeto.rotacao">
+                </div>
+                
+                <label class="control-label col-sm-2">Escala:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="objeto.escala">
+                </div>
+            </div>
+        </fieldset>
+        
+        <fieldset ng-show="isVertice()">
+            <legend>Informações</legend>
+            <div class="form-group" >
+                <label class="control-label col-sm-2">Descrição:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="objeto.descricao">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-sm-2">Tipo:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="objeto.tipo">
+                </div>
+            </div>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Posição</legend>
+            <div class="form-group">
+                <label class="control-label col-sm-1">X:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" ng-model="objeto.position.x">
+                </div>
+                <label class="control-label col-sm-1">Y:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" ng-model="objeto.position.y">
+                </div>
+                <label class="control-label col-sm-1">Z:</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" ng-model="objeto.position.z">
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>
