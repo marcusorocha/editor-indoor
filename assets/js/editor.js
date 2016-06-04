@@ -248,30 +248,18 @@ function EditorIndoor( container )
 		
 		width = container.clientWidth;
 		height = container.clientHeight;
-
-		//camera = new THREE.PerspectiveCamera( 100, width / height, 1, 10000 );
-		//camera.position.z = 5;
 		
-		var cameraAux = new THREE.CombinedCamera( width / 2, height / 2, 70, 1, 1000, - 500, 1000 );
-		//camera.position.x = 200;
-		//camera.position.y = 100;
-		//camera.position.z = 200;
-		//camera.position.z = 5;
-		
-		//camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+		camera = new THREE.CombinedCamera( width / 2, height / 2, 70, 1, 1000, - 500, 1000 );
 		
 		// Configurações de Câmera
-		cameraAux.toOrthographic();
-		//cameraAux.toTopView();
-		cameraAux.setZoom(8);
-		//cameraAux.rotateZ(0.5 * Math.PI);
-		//cameraAux.translateX(800);
-		//cameraAux.translateY(-700);
-		//cameraAux.setFov( 70 );
-		//cameraAux.setLens( 12 );
-		
-		//camera = cameraAux.cameraO;
-		camera = cameraAux;
+		camera.toOrthographic();
+		//camera.toTopView();
+		camera.setZoom(8);
+		//camera.rotateZ(0.5 * Math.PI);
+		//camera.translateX(800);
+		//camera.translateY(-700);
+		//camera.setFov( 70 );
+		//camera.setLens( 12 );
 		
 		scene = new THREE.Scene();
 
