@@ -61,16 +61,7 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
                 fnError);
             }, 
             fnError);
-            
-            /*
-            GrafoService.save(grafo, function(grafo) 
-            {
-                $scope.atualizarGrafo(angular.copy(grafo));
-                $rootScope.setLoading(false);
-                alert(" Informações gravadas com sucesso ");
-            }, fnError);
-            */
-            
+                                    
 		}, fnError);
     };
     
@@ -142,14 +133,20 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
     $scope.carregaGrafo = function() 
     {
         $rootScope.setLoading(true);
-        
-        var chave = { pid : $scope.params.pavimentoId };
                
-        GrafoService.get(chave, function(grafo)
-		{ 
-            $scope.atualizarGrafo(angular.copy(grafo));            
-            $rootScope.setLoading(false);
-		});
+        GrafoService.getPavimento($scope.params.pavimentoId).then
+        (
+            function(response)
+            { 
+                $scope.atualizarGrafo(angular.copy(response.data));            
+                $rootScope.setLoading(false);
+            }, 
+            function(erro) 
+            {            
+                $rootScope.setLoading(false);
+                alert(erro); 
+            }
+        );
     };
     
     $scope.atualizarGrafo = function( grafo ) 
@@ -172,16 +169,54 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
                 return v.sid == this;
             };
             
+            var fnAdicionaAresta = function( vA, vB )
+            {
+                if (vA && vB)
+                {
+                    var aresta = new Aresta( vA, vB );
+                    aresta.fromJSON( a );
+                                    
+                    $scope.grafo.arestas.push( aresta );
+                    
+                    // Somente será apresentado se "não" for uma aresta de "Acesso"
+                    if (!a.acesso) $scope.editor.adicionarObjeto( aresta );
+                }
+            }
+            
+            var fnCriarVertice = function(sid, fnOnComplete)
+            {
+                VerticeService.get({ id: sid }, function(v)
+                {
+                    var vertice = new Vertice();
+                    vertice.fromJSON( v );
+                    fnOnComplete(vertice);
+                });
+            }
+            
             var vA = $scope.grafo.vertices.find(fnVerificaVertice, a.idVerticeA);
             var vB = $scope.grafo.vertices.find(fnVerificaVertice, a.idVerticeB);
             
-            if (vA && vB)
+            if (a.acesso)
             {
-                var aresta = new Aresta( vA, vB );
-                
-                $scope.editor.adicionarObjeto( aresta );
-                $scope.grafo.arestas.push( aresta );
-            }
+                if (vA == undefined) 
+                {
+                    fnCriarVertice(a.idVerticeA, function( vA ) 
+                    {
+                        fnAdicionaAresta(vA, vB);
+                    });
+                } 
+                else 
+                {
+                    fnCriarVertice(a.idVerticeB, function( vB ) 
+                    {
+                        fnAdicionaAresta(vA, vB);
+                    });
+                }
+            } 
+            else 
+            {
+                fnAdicionaAresta(vA, vB);
+            }                     
         });
     };
     
@@ -279,14 +314,22 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
             templateUrl: 'app/components/mapa/propriedadesView.html',
             controller: 'PropriedadesController',
             resolve: {
-                objeto: function () {
-                    
+                objeto: function () 
+                {    
                     var selecao = $scope.editor.obterObjetoSelecionado();
                     
                     if (selecao)                     
                         return selecao;
                     else
                         return $scope.planta;
+                },
+                grafo : function()
+                {
+                    return $scope.grafo;   
+                },
+                edificioId : function()
+                {
+                    return $scope.params.edificioId;  
                 }
             }
         });

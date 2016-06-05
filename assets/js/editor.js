@@ -47,7 +47,7 @@ function EditorIndoor( container )
 		if ( objeto )
 		{
 			objeto_selecionado = objeto;
-			objeto_selecionado.material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+			objeto_selecionado.setSelecionado( true );
 		}	
 	},
 	
@@ -55,7 +55,7 @@ function EditorIndoor( container )
 	{
 		if (objeto_selecionado)
 		{
-			objeto_selecionado.material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+			objeto_selecionado.setSelecionado( false );
 			objeto_selecionado = null;
 		}
 	},
@@ -332,35 +332,4 @@ function EditorIndoor( container )
 	}
 	
 	this.inicializar( container );
-};
-
-// Converts from degrees to radians.
-Math.radians = function(degrees)
-{
-	return degrees * Math.PI / 180;
-};
-
-// Converts from radians to degrees.
-Math.degrees = function(radians)
-{
-	return radians * 180 / Math.PI;
-};
-
-Math.angulo = function(x, y)
-{
-	var theta = Math.atan2(y, x);
-	var angle = Math.degrees(theta);
-
-	if (angle > 0)
-		return angle;
-	else
-		return 360 + angle;
-};
-
-vectorDeRaioAngulo = function(angulo, raio)
-{
-	var x = raio * Math.cos(Math.PI * angulo / 180.0);
-	var y = raio * Math.sin(Math.PI * angulo / 180.0);
-
-	return new THREE.Vector3(x, y, 0);
 };

@@ -35,6 +35,7 @@ Planta.prototype.carregaPlanta = function(baseURL, params, fnSucesso, fnProgress
         
         object.position.x = center.x * -1;
         object.position.y = center.y * -1;
+        object.position.z = 0;
                                 
         self.add( object );
         
