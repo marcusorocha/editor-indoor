@@ -17,7 +17,7 @@ function EditorIndoor( container )
 	var	plane;
 	var	quadrante;
 	var	objeto_pressionado;
-	var	objeto_selecionado;		
+	var	objeto_selecionado;
 	var width, height;
 	var mouse_pressed = false;
 	var objetos = [];
@@ -329,7 +329,19 @@ function EditorIndoor( container )
 
 		//quando o conteúdo html do renderer for selecionado
 		container.removeEventListener('selectstart', this.callbacks.onSelectStart );
-	}
+	},
+
+	this.limpar = function() 
+    {
+        for (var i = scene.children.length - 1; i >= 0 ; i--) 
+        {
+            var child = scene.children[ i ];
+
+            if (child !== camera ) { // camera are stored earlier
+                scene.remove(child);
+            }
+        }
+    }
 	
 	this.inicializar( container );
 };

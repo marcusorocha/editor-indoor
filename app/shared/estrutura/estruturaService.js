@@ -10,6 +10,11 @@ var estruturaServiceImpl = function ($http)
     {
         return $http.get(url + '/obter');
     };
+
+	DAO.listaCampuses = function ()
+    {
+        return $http.get(url + '/campus');
+    };
     
     return DAO;
 }

@@ -1,15 +1,17 @@
-app.controller("MapaController", function($scope, $rootScope, $document, $routeParams, $uibModal, $log, PavimentoService, GrafoService, VerticeService, ArestaService)
-{   
-    $scope.params = $routeParams;
-    $scope.planta = { };
-    $scope.pavimento = { };    
+app.controller('MapasController', function($scope, TreeViewService, EstruturaService, $rootScope, $document, $routeParams, $uibModal, $log, PavimentoService, GrafoService, VerticeService, ArestaService) {
+
+    var service = new TreeViewService;
+
+    $scope.estService = service;
+    $scope.estrutura;
+    $scope.pavimento;
+    $scope.planta;    
     $scope.grafo = { vertices: [], arestas: [] };
-    
-    $scope.$on('$viewContentLoaded', function() 
-    {        
+
+    $scope.$on('$viewContentLoaded', function()
+    {
         $scope.editor = new EditorIndoor($document[0].getElementById("desenho"));
-        $scope.carregaPavimento();
-        $scope.carregaGrafo();
+        $scope.carregaEstrutura();
     });
 
     $scope.$on('$destroy', function() 
@@ -17,7 +19,7 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
         $scope.editor.dispose();
         delete $scope.editor;
     });
-    
+
     $scope.salva = function()
     {
         $rootScope.setLoading(true);
@@ -95,46 +97,87 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
         return lista;
     };
     
-    $scope.novoVertice = function()
-    {				
-        var vertice = new Vertice();
-        
-        $scope.editor.adicionarObjeto( vertice );
-        $scope.grafo.vertices.push( vertice );
-        
-        var selecao = $scope.editor.obterObjetoSelecionado();
-        
-        if ( selecao )
-        {
-            var aresta = new Aresta( vertice, selecao );
-            
-            $scope.editor.adicionarObjeto( aresta );
-            $scope.grafo.arestas.push( aresta );
-        }
-    };
-    
-    $scope.removeSelecionado = function()
+    $scope.carregaEstrutura = function() 
     {
-        var selecao = $scope.editor.obterObjetoSelecionado();
-        
-        if (!selecao)
+        EstruturaService.obterEstrutura().success(function (estrutura)
         {
-            alert("Nenhum objeto selecionado");
-            return;
-        }
-        
-        if (selecao instanceof Vertice)
-        {
-            $scope.removerVertice( vertice, true );
-            $scope.editor.limparSelecao();
-        }
+            $scope.estrutura = estrutura;            
+
+            estrutura.forEach(function(campus) 
+            {
+                var nodeCampus = { id: campus.id, name: campus.nome, children: [] };
+
+                campus.edificios.forEach(function(bloco) 
+                {
+                    var nodeBloco = { id: bloco.id, name: bloco.nome, children: [] };
+
+                    bloco.pavimentos.forEach(function(pavimento) 
+                    {
+                        var nodePavimento = { 
+                            id: pavimento.id, 
+                            name: 'Pavimento ' + pavimento.nivel,
+                            data: pavimento 
+                        };
+
+                        this.children.push(nodePavimento);    
+                    },
+                    nodeBloco);
+
+                    this.children.push(nodeBloco);
+                }, 
+                nodeCampus);
+
+                this.nodes.push(nodeCampus);                
+            }, 
+            $scope.estService);            
+        });
     };
-    
+
+    $scope.selecionaPavimento = function(pavimento) 
+    {
+        $rootScope.setLoading(true);            
+        
+        $scope.pavimento = angular.copy(pavimento);
+        $scope.editor.limpar();
+        $scope.carregaPlanta();
+        $scope.carregaGrafo();
+    };
+
+    $scope.carregaPlanta = function() 
+    {
+        var onProgress = function ( xhr ) {
+            if ( xhr.lengthComputable ) {
+                var percentComplete = xhr.loaded / xhr.total * 100;
+                console.log( Math.round(percentComplete, 2) + '% downloaded' );
+            }
+        };
+        
+        var onError = function ( xhr ) 
+        { 
+            alert(xhr.target.responseText);
+            $rootScope.setLoading(false);  
+        };
+
+        var baseURL = api + '/plantas/obter';
+        var params = '/' + $scope.pavimento.idEdificio + '/' + $scope.pavimento.id + '/';
+        
+        var planta = new Planta();
+        planta.carregaPlanta(baseURL, params, function (planta) 
+        {            
+            $scope.planta = planta;
+            $scope.planta.copiarDoServidor( $scope.pavimento.planta );
+            $scope.editor.adicionarObjeto( $scope.planta );
+            
+            $rootScope.setLoading(false);
+
+        }, onProgress, onError);
+    };
+
     $scope.carregaGrafo = function() 
     {
         $rootScope.setLoading(true);
                
-        GrafoService.getPavimento($scope.params.pavimentoId).then
+        GrafoService.getPavimento($scope.pavimento.id).then
         (
             function(response)
             { 
@@ -148,7 +191,7 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
             }
         );
     };
-    
+
     $scope.atualizarGrafo = function( grafo ) 
     {
         $scope.limparGrafo();
@@ -219,7 +262,7 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
             }                     
         });
     };
-    
+
     $scope.limparGrafo = function() 
     {
         $scope.grafo.vertices.forEach(function(v)
@@ -247,49 +290,57 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
         
         $scope.editor.removerObjeto(vertice);
     };
-    
-    $scope.carregaPavimento = function() 
-    {
-        $rootScope.setLoading(true);
+
+    $scope.novoVertice = function()
+    {				
+        var vertice = new Vertice();
         
-        var chave = { oid : $scope.params.pavimentoId };
-               
-        PavimentoService.get(chave, function(pavimento)
-		{
-			$scope.pavimento = angular.copy(pavimento);
-            $scope.carregaPlanta();
+        $scope.editor.adicionarObjeto( vertice );
+        $scope.grafo.vertices.push( vertice );
+        
+        var selecao = $scope.editor.obterObjetoSelecionado();
+        
+        if ( selecao )
+        {
+            var aresta = new Aresta( vertice, selecao );
             
-            $rootScope.setLoading(false);
-		});
+            $scope.editor.adicionarObjeto( aresta );
+            $scope.grafo.arestas.push( aresta );
+        }
     };
-    
-    $scope.carregaPlanta = function() 
+
+    $scope.removeSelecionado = function()
     {
-        var onProgress = function ( xhr ) {
-            if ( xhr.lengthComputable ) {
-                var percentComplete = xhr.loaded / xhr.total * 100;
-                console.log( Math.round(percentComplete, 2) + '% downloaded' );
+        var selecao = $scope.editor.obterObjetoSelecionado();
+        
+        if (!selecao)
+        {
+            alert("Nenhum objeto selecionado");
+            return;
+        }
+        
+        if (selecao instanceof Vertice)
+        {
+            $scope.removerVertice( vertice, true );
+            $scope.editor.limparSelecao();
+        }
+    };
+
+    $scope.$watch('estService.selectedNode', function() 
+    {
+        if (service.selectedNode)
+        {
+            if (service.selectedNode.data)
+            {                                
+                $scope.selecionaPavimento(service.selectedNode.data);
             }
-        };
-        
-        var onError = function ( xhr ) { alert(xhr.target.responseText); };
-        var baseURL = api + '/plantas/obter';
-        var params = '/' + $scope.params.edificioId + '/' + $scope.params.pavimentoId + '/';
-        
-        var planta = new Planta();
-        planta.carregaPlanta(baseURL, params, function (planta) 
-        {            
-            $scope.planta = planta;
-            $scope.planta.copiarDoServidor( $scope.pavimento.planta );
-            $scope.editor.adicionarObjeto( $scope.planta );
-            
-        }, onProgress, onError);
-    };
-    
+        }
+    });
+
     $scope.enviaPlanta = function (size) 
     {
         var modalInstance = $uibModal.open({
-            templateUrl: 'app/components/mapa/plantaView.html',
+            templateUrl: 'app/components/mapas/planta/plantaView.html',
             controller: 'PlantaController',
             resolve: {
                 params: function () {
@@ -311,7 +362,7 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
     $scope.propriedades = function () 
     {
         var modalPropriedades = $uibModal.open({
-            templateUrl: 'app/components/mapa/propriedadesView.html',
+            templateUrl: 'app/components/mapas/propriedades/propriedadesView.html',
             controller: 'PropriedadesController',
             resolve: {
                 objeto: function () 
@@ -329,7 +380,7 @@ app.controller("MapaController", function($scope, $rootScope, $document, $routeP
                 },
                 edificioId : function()
                 {
-                    return $scope.params.edificioId;  
+                    return $scope.pavimento.idEdificio;  
                 }
             }
         });

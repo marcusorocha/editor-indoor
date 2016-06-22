@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Editor Indoor</title>
+		<style>
+			html, body { height: 100%; margin: 0px; padding: 0px; border : none; }
+			
+			#editor { width: 100%; height: 100% }						
+
+			#estrutura {
+				background-color: grey;
+				float : left;
+				width: 20%;
+				height: 100%;
+			}
+			
+			#area-edicao {
+			    background-color: #FFF;
+				float : left;
+			    width: 80%;
+			    height: 100%;
+			    padding: 0px;
+			}
+			
+		</style>
+
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet">			
+		
+		<!-- ThreeJS imports -->		
+		<script src="assets/libs/three-js/build/three.js"></script>
+        <script src="assets/libs/three-js/examples/js/cameras/CombinedCamera.js"></script>
+        <script src="assets/libs/three-js/examples/js/renderers/Projector.js"></script>
+		<script src="assets/libs/three-js/examples/js/renderers/CanvasRenderer.js"></script>
+        <script src="assets/libs/three-js/examples/js/loaders/MTLLoader.js"></script>
+        <script src="assets/libs/three-js/examples/js/loaders/OBJLoader.js"></script>
+		
+		<!-- AngularJS imports -->
+		<script src="assets/libs/angular-1.5.5/angular.js"></script>
+		<script src="assets/libs/angular-1.5.5/angular-route.js"></script>
+		<script src="assets/libs/angular-1.5.5/angular-resource.js"></script>
+		
+		<!-- UI Bootstrap for AngularJS -->
+		<script src="assets/libs/ui-bootstrap-tpls-1.3.3.js"></script>
+		
+		<!-- Spin -->
+		<script src="assets/libs/spin.js"></script>
+		
+		<!-- Angular Loading -->
+		<link href="assets/libs/angular-loading/angular-loading.css" rel="stylesheet">
+		<script src="assets/libs/angular-loading/angular-loading.js"></script>
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="assets/libs/jquery-1.11.3.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <!-- <script src="js/bootstrap.min.js"></script> -->
+		
+		<script src="assets/js/planta.js"></script>		
+		<script src="assets/js/vertice.js"></script>
+		<script src="assets/js/aresta.js"></script>	
+		<script src="assets/js/funcoes.js"></script>
+	    <script src="assets/js/editor.js"></script>
+		
+		<!-- Aplicacao -->
+		<script src="app/app.module.js"></script>
+		<script src="app/app.routes.js"></script>
+		
+		<!-- Menu e Estrutura -->
+		<script src="app/shared/estrutura/estruturaService.js"></script>		
+		<script src="app/shared/estrutura/estruturaController.js"></script>		
+		
+		<!-- Home -->		
+		<script src="app/components/home/homeController.js"></script>
+		
+		<!-- Mapa -->		
+		<script src="app/components/mapa/mapaController.js"></script>		
+		<script src="app/components/mapa/plantaController.js"></script>
+		<script src="app/components/mapa/propriedadesController.js"></script>
+		<script src="app/components/mapa/mapaService.js"></script>
+		<script src="app/components/mapa/grafoService.js"></script>
+	</head>
+	
+	<body ng-app="editorApp">
+		
+		<div id="editor" dw-loading="editor" dw-loading-options="{active: false, text: false}">
+			
+			<div id="estrutura" ng-controller="EstruturaController" ng-init="carregaEstrutura()">
+				<ul>
+					<li><a href="#home"> Home </a></li>
+				</ul>				
+				<div>Estrutura</div>
+				<ul>
+					<li ng-repeat="campus in estrutura">
+						<a href="#"> {{ ::campus.nome }} </a>						
+						<ul>
+							<li ng-repeat="edificio in campus.edificios">
+								<a href="#"> {{ ::edificio.nome }} </a>
+								<ul>
+									<li ng-repeat="pavimento in edificio.pavimentos">
+										<a href="#mapa/{{ ::pavimento.idEdificio }}/{{ ::pavimento.id }}"> Pavimento - {{ ::pavimento.nivel }} </a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			
+			<div id="area-edicao" ng-view></div>
+		
+		</div>
+
+		<script>
+			// Código aqui somente se extremamente necessário
+		</script>
+
+	</body>
+</html>

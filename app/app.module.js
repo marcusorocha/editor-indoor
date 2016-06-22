@@ -1,5 +1,5 @@
 
-var app = angular.module("editorApp", ['ngRoute', 'editorServices', 'ui.bootstrap', 'darthwade.loading']);
+var app = angular.module("editorApp", ['ngRoute', 'editorServices', 'ui.bootstrap', 'ui.bootstrap.treeview', 'darthwade.loading']);
 var services = angular.module('editorServices', ['ngResource']);
 
 var api = "http://indoor-furbmobile2016.rhcloud.com/api";

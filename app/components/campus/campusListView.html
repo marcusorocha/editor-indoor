@@ -1,0 +1,36 @@
+<div class="row">
+    
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    
+        <div class="x_panel">
+            
+            <div class="x_title">
+                <h2>Campus<small>Lista de campus da universidade</small></h2>            
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+                <div class="dt-buttons btn-group" style="margin-bottom: 5px">
+                    <a class="btn btn-default buttons-copy buttons-html5 btn-sm" tabindex="0" aria-controls="datatable-buttons" href="#campus/new"><span>Novo</span></a>                
+                </div>
+
+                <table class="table table-striped jambo_table">
+                    <thead>
+                        <tr class="headings">
+                            <th class="column-title" style="display: table-cell;">Nome </th>                                
+                            <th class="column-title no-link last" style="display: table-cell;"><span class="nobr">Ações</span></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="campus in campuses">
+                            <td class=" ">{{ ::campus.nome }}</td>                                
+                            <td class=" last" style="width: 100px"><a href="#campus/edit/{{ ::campus.id }}">Editar</a></td>
+                        </tr>                 
+                    </tbody>
+                </table>           
+            </div>
+        </div>
+    </div>
+</div>
