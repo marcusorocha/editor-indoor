@@ -41,7 +41,12 @@ app.controller("CampusFormController", function($scope, $location, $rootScope, $
         $scope.campus.$save(function() 
         {
             $rootScope.setLoading(false);
-            $location.url('/campus'); 
-        });        
+            $location.url('/campus');
+        });
     };
+
+    $scope.cancelar = function() 
+    {
+        $location.url('/campus');
+    }
 });
