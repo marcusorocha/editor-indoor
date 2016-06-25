@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Edição do Pavimento <small>{{ pavimento }}</small></h2>            
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <br>
+                <form class="form-horizontal form-label-left" ng-submit="salvar()">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nome">Nível<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="nome" ng-model="pavimento.nivel" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="bloco">Bloco<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">                            
+                            <select id="bloco" ng-model="pavimento.idEdificio" ng-options="b.id as b.nome group by b.campus.nome for b in blocos | orderBy:'nome'" required="required" class="form-control col-md-7 col-xs-12"></select>                            
+                        </div>
+                    </div>
+
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button type="button" class="btn btn-primary" ng-click="cancelar()" >Cancelar</button>
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

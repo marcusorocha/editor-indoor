@@ -1,6 +1,6 @@
-var campusServiceImpl = function ($resource)
+var blocoServiceImpl = function ($resource)
 {	
-	var url = api + "/campus/:id";
+	var url = api + "/bloco/:id";
 	
 	var params = {
             'get' : { method:'GET' },
@@ -12,4 +12,4 @@ var campusServiceImpl = function ($resource)
 	return $resource(url, params);
 };
 
-services.factory('CampusService', ['$resource', campusServiceImpl]);
+services.factory('BlocoService', ['$resource', blocoServiceImpl]);

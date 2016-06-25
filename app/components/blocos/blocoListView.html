@@ -5,7 +5,7 @@
         <div class="x_panel">
             
             <div class="x_title">
-                <h2>Campus<small>Lista de campus da universidade</small></h2>            
+                <h2>Blocos<small>Lista de blocos da universidade</small></h2>            
                 <div class="clearfix"></div>
             </div>
 
@@ -18,17 +18,19 @@
                 <table class="table table-striped jambo_table">
                     <thead>
                         <tr class="headings">
-                            <th class="column-title" style="display: table-cell;">Nome </th>                                
-                            <th class="column-title no-link last" style="display: table-cell; text-align: center;"><span class="nobr">Ações</span></th>
+                            <th class="column-title">Nome </th>
+                            <th class="column-title">Campus </th>
+                            <th class="column-title no-link last" style="text-align: center;"><span class="nobr">Ações</span></th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr ng-repeat="campus in campuses | orderBy:'nome'">
-                            <td class=" ">{{ ::campus.nome }}</td>                                
+                        <tr ng-repeat="bloco in blocos | orderBy:'nome'">
+                            <td class=" ">{{ ::bloco.nome }}</td>
+                            <td class=" ">{{ ::bloco.campus.nome }}</td>
                             <td class=" last" style="width: 80px">
-                                <a class="btn btn-primary btn-xs" href="#campus/edit/{{ ::campus.id }}"><i class="fa fa-edit"></i></a>
-                                <a class="btn btn-danger btn-xs" ng-click="excluir(campus)"><i class="fa fa-remove"></i></a>
+                                <a class="btn btn-primary btn-xs" href="#blocos/edit/{{ ::bloco.id }}"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-danger btn-xs" ng-click="excluir(bloco)"><i class="fa fa-remove"></i></a>
                             </td>
                         </tr>
                     </tbody>

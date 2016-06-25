@@ -1,5 +1,5 @@
 
-var app = angular.module("editorApp", ['ngRoute', 'editorServices', 'ui.bootstrap', 'ui.bootstrap.treeview', 'darthwade.loading']);
+var app = angular.module("editorApp", ['ngRoute', 'editorServices', 'ui.bootstrap', 'ui.bootstrap.treeview', 'darthwade.loading', 'angular-confirm']);
 var services = angular.module('editorServices', ['ngResource']);
 
 var api = "http://indoor-furbmobile2016.rhcloud.com/api";
@@ -8,9 +8,7 @@ var api = "http://indoor-furbmobile2016.rhcloud.com/api";
 app.run(function($rootScope, $loading) 
 {    
     $rootScope.setLoading = function(loading) 
-    {
-        //$rootScope.isLoading = loading;
-        
+    {        
         if (loading)
             $rootScope.startLoading('editor');
         else
@@ -26,6 +24,14 @@ app.run(function($rootScope, $loading)
     {
         $loading.finish(name);
     };
+
+    $rootScope.tratarErro = function( response ) 
+    {
+        if (response.data)
+          alert('Erro: ' + response.data.mensagem);
+        else
+          alert('Erro: ' + response);
+    }
 })
 .directive('convertToNumber', function() {
   return {

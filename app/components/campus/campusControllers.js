@@ -1,14 +1,36 @@
-app.controller("CampusListController", function($scope, CampusService)
+app.controller("CampusListController", function($scope, $rootScope, $confirm, CampusService)
 {
     $scope.campus = [];
     
     $scope.carregaCampuses = function() 
     {
+        $rootScope.setLoading(true);
+
         CampusService.query(function (campuses)
         {
             $scope.campuses = campuses;
+            $rootScope.setLoading(false);
+        }, 
+        function(erro) 
+        {
+            $rootScope.setLoading(false);    
         });
     };
+
+    $scope.excluir = function(campus) 
+    {
+        $confirm({text: 'Você tem certeza que deseja remover ?', title: 'Exclusão', ok: 'Sim', cancel: 'Não'})
+        .then(function() {
+            campus.$delete({id: campus.id}, function()
+            {                
+                $scope.carregaCampuses();
+            }, 
+            function(response) 
+            {
+                $rootScope.tratarErro(response);
+            });
+        });
+    }
 
     $scope.$on('$viewContentLoaded', function()
     {
@@ -42,6 +64,11 @@ app.controller("CampusFormController", function($scope, $location, $rootScope, $
         {
             $rootScope.setLoading(false);
             $location.url('/campus');
+        }, 
+        function(response) 
+        {
+            $rootScope.setLoading(false);
+            $rootScope.tratarErro(response);
         });
     };
 

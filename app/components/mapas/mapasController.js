@@ -1,4 +1,4 @@
-app.controller('MapasController', function($scope, TreeViewService, EstruturaService, $rootScope, $document, $routeParams, $uibModal, $log, PavimentoService, GrafoService, VerticeService, ArestaService) {
+app.controller('MapasController', function($scope, $filter, TreeViewService, EstruturaService, $rootScope, $document, $routeParams, $uibModal, $log, PavimentoService, GrafoService, VerticeService, ArestaService) {
 
     var service = new TreeViewService;
 
@@ -30,7 +30,7 @@ app.controller('MapasController', function($scope, TreeViewService, EstruturaSer
             alert("Erro ao gravar as informações: " + error);
         };
         
-        // Preparar o planta para ser enviada ao servidor
+        // Preparar os dados da planta para serem enviados ao servidor
         $scope.planta.copiarParaServidor( $scope.pavimento.planta );
         
         PavimentoService.save($scope.pavimento, function(pavimento)
@@ -100,36 +100,40 @@ app.controller('MapasController', function($scope, TreeViewService, EstruturaSer
     $scope.carregaEstrutura = function() 
     {
         EstruturaService.obterEstrutura().success(function (estrutura)
-        {
-            $scope.estrutura = estrutura;            
+        {            
+            $scope.estrutura = $filter('orderBy')(estrutura, "nome");
 
-            estrutura.forEach(function(campus) 
+            for (var c in $scope.estrutura)
             {
+                var campus = $scope.estrutura[c];                            
                 var nodeCampus = { id: campus.id, name: campus.nome, children: [] };
 
-                campus.edificios.forEach(function(bloco) 
+                campus.edificios = $filter('orderBy')(campus.edificios, "nome");
+
+                for (var b in campus.edificios)
                 {
+                    var bloco = campus.edificios[b];
                     var nodeBloco = { id: bloco.id, name: bloco.nome, children: [] };
 
-                    bloco.pavimentos.forEach(function(pavimento) 
+                    bloco.pavimentos = $filter('orderBy')(bloco.pavimentos, "nivel");
+
+                    for (var p in bloco.pavimentos)
                     {
+                        var pavimento = bloco.pavimentos[p];
                         var nodePavimento = { 
                             id: pavimento.id, 
                             name: 'Pavimento ' + pavimento.nivel,
                             data: pavimento 
                         };
 
-                        this.children.push(nodePavimento);    
-                    },
-                    nodeBloco);
+                        nodeBloco.children.push(nodePavimento);
+                    }
 
-                    this.children.push(nodeBloco);
-                }, 
-                nodeCampus);
+                    nodeCampus.children.push(nodeBloco);
+                }
 
-                this.nodes.push(nodeCampus);                
-            }, 
-            $scope.estService);            
+                $scope.estService.nodes.push(nodeCampus);                
+            }
         });
     };
 

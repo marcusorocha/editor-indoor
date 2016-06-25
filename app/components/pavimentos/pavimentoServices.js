@@ -1,6 +1,6 @@
-var campusServiceImpl = function ($resource)
+var pavimentoServiceImpl = function ($resource)
 {	
-	var url = api + "/campus/:id";
+	var url = api + "/pavimento/:id";
 	
 	var params = {
             'get' : { method:'GET' },
@@ -12,4 +12,4 @@ var campusServiceImpl = function ($resource)
 	return $resource(url, params);
 };
 
-services.factory('CampusService', ['$resource', campusServiceImpl]);
+services.factory('PavimentoService', ['$resource', pavimentoServiceImpl]);
