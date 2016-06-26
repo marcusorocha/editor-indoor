@@ -6,6 +6,7 @@ var Vertice = function()
     this.tipo = 1;
     this.icone = 1;
     this.descricao = "";
+    this.identificacao = "";
     
     this.cores = {
         selecionado: 0xAAAAAA,
@@ -79,6 +80,7 @@ Vertice.prototype.toJSON = function()
     
     var json = {
         id: this.sid,
+        identificacao: this.identificacao,
         descricao: this.descricao,  
         icone: this.icone,
         tipo: this.tipo,
@@ -95,6 +97,7 @@ Vertice.prototype.fromJSON = function(json)
     this.position.z = json.posicao.z;
     
     this.sid = json.id;
+    this.identificacao = json.identificacao;
     this.descricao = json.descricao;
     this.icone = json.icone;
     this.tipo = json.tipo;

@@ -38,9 +38,15 @@
                             <option value="1">Sala</option>
                             <option value="2">Elevador</option>
                             <option value="3">Escada</option>
-                            <option value="3">Banheiro</option>
+                            <option value="4">Banheiro</option>
                         </select>
                     </div>
+                </div>
+            </div>
+            <div class="form-group" ng-hide="isConector()">
+                <label class="control-label col-sm-2">Identificação:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control input-sm" ng-model="objeto.identificacao">
                 </div>
             </div>
             <div class="form-group" ng-hide="isConector()">
