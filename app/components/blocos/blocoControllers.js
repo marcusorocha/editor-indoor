@@ -1,7 +1,7 @@
 app.controller("BlocoListController", function($scope, $rootScope, $confirm, BlocoService, CampusService)
 {
     $scope.blocos = [];
-    
+            
     $scope.carregaBlocos = function() 
     {
         $rootScope.setLoading(true);
@@ -13,7 +13,7 @@ app.controller("BlocoListController", function($scope, $rootScope, $confirm, Blo
         }
 
         CampusService.query(function(campus)
-        {
+        {                        
             BlocoService.query(function(blocos)
             {
                 for (var i in blocos)
@@ -68,21 +68,27 @@ app.controller("BlocoFormController", function($scope, $location, $rootScope, $r
         CampusService.query(function(campus)
         {
             $scope.campus = campus;
-
-            BlocoService.get({id: id}, function (bloco)
-            {                
-                $scope.bloco = bloco;                
+            
+            if (id)
+            {
+                BlocoService.get({id: id}, function (bloco)
+                {                
+                    $scope.bloco = bloco;                
+                    $rootScope.setLoading(false);
+                },
+                onErro);
+            }
+            else
+            {
                 $rootScope.setLoading(false);
-            },
-            onErro);
+            }
         },
         onErro);
     };
 
     $scope.$on('$viewContentLoaded', function()
     {
-        if ($routeParams.id)
-            $scope.carregaBloco($routeParams.id);
+        $scope.carregaBloco($routeParams.id);
     });
 
     $scope.salvar = function() 
