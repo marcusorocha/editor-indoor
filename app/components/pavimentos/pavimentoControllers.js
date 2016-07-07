@@ -87,13 +87,20 @@ app.controller("PavimentoFormController", function($scope, $location, $rootScope
                 }
 
                 $scope.blocos = blocos;
-
-                PavimentoService.get({id: id}, function (pavimento)
-                {                    
-                    $scope.pavimento = pavimento;               
+                
+                if (id)
+                {
+                    PavimentoService.get({id: id}, function (pavimento)
+                    {                    
+                        $scope.pavimento = pavimento;               
+                        $rootScope.setLoading(false);
+                    },
+                    onErro);
+                }
+                else
+                {
                     $rootScope.setLoading(false);
-                },
-                onErro);
+                }
             },
             onErro);
         },
@@ -102,8 +109,7 @@ app.controller("PavimentoFormController", function($scope, $location, $rootScope
 
     $scope.$on('$viewContentLoaded', function()
     {
-        if ($routeParams.id)
-            $scope.carregaPavimento($routeParams.id);
+        $scope.carregaPavimento($routeParams.id);
     });
 
     $scope.salvar = function() 
